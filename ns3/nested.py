@@ -14,42 +14,69 @@ def list_objects(bucketpath, inc_pattern=None, exc_pattern=None, limit=200,
     """
     List the files in supplied bucketpath from s3 cloud storage
 
-    If recursive is True, then list recursively all objects (no dirs).
-
     Keyword Arguments:
 
-        path {str}     -- path name (bucketpath)
-                            (default: {''}, searches in working directory)
+        bucketpath {str}  -- bucketpath from which files are to be listed
 
-        use_cwd {bool} -- Whether to use the set working dir for bucket
-                            if false, full path is to be provided in
-                            [path] arg
-                            (default: {True})
-
-        filename_pattern {str} -- pattern to be followed in listing files
+        inc_pattern {str} -- pattern to be followed while listing files
                             (default: {None})
 
-        recursive {bool} -- Should you list sub-directories as well?
-                            (default: {False})
-
-        full_name {bool} -- whether to return full path to the files
-                            (default: {True})
-
-        list_dirs {bool} -- list the directories as well if true
-                            lists only when recursive is False
-                            (default: {False})
-
-        list_objs {bool} -- list the objects as well when if true,
-                            when recursive is False
-                            (default: {True})
+        exc_pattern {str} -- pattern to be ignored while listing files
+                            (default: {None})
 
         limit {int}      -- number of objects to be listed from the path
-                            (default: {None})
+                            (default: {200})
 
-        obj {bool}       -- return the listed paths as S3Obj if true else
-                            list of filenames
+        query {str}      -- add custom queries to the function to be used
+                            while listing S3 objects
+                            (default: {None)
+                            (to be added soon)
+
+        dirs_only {bool} -- list only the directories from the bucketpath
                             (default: {False})
+                            (to be added soon)
 
+        starting_token {bool} -- s3api token to be used to start the file
+                            listing from.
+                            (default: {True})
+
+    Returns:
+
+        _df {pandas dataframe} -- dataframe with columns Key (filepaths),
+                             last modified time, file size, etag and bucketname
+
+        _next_token {str}   -- s3api token, when listing limited number of
+                             files from a path containing large number of files.
+                             None if there are no files left to list.
+
+    Examples:
+
+        # list through all S3 objects under some dir with default limit
+        >>> df, token = ns3.list_objects('bname/path/to/be/listed/on/bucket')
+
+        # list thorough S3 objects under some directory with an inclusive pattern
+        # limit 200
+        >>> df, token = ns3.list_objects('bname/path/to/be/listed/on/bucket',
+                                         inc_pattern='*india_villages*')
+        >>> df, token = ns3.list_objects('bname/path/to/be/listed/on/bucket',
+                                         inc_pattern='*villages*|*towns*')
+
+        # list thorough S3 objects under some directory with an exclusive pattern
+        # limit 200
+        >>> df, token = ns3.list_objects('bname/path/to/be/listed/on/bucket',
+                                         exc_pattern='*india_villages*')
+        >>> df, token = ns3.list_objects('bname/path/to/be/listed/on/bucket',
+                                         exc_pattern='*villages*|*towns*')
+
+        # list through all S3 objects under some dir with specified limit
+        >>> df, token = ns3.list_objects('bname/path/to/be/listed/on/bucket',
+                                         limit=400)
+
+        # list through all S3 objects under some dir with as starting toke
+        >>> df, token = ns3.list_objects(
+                'bname/path/to/be/listed/on/bucket',
+                starting_token='eyJNYXJrZXIiOiBudWxsLCAiYm....'
+            )
     """
     bname, bpath = parse_cloudpath(bucketpath)
 
