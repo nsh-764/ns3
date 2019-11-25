@@ -285,18 +285,16 @@ Default: False
 
     bucketpath = re.sub('/$', '', args.bucketpath)
     bname, bpath = parse_cloudpath(bucketpath)
-    if args.Ipattern:
-        iquery = get_pattern_string(args.Ipattern)
-    else:
-        iquery = ''
 
-    if args.Epattern:
-        equery = get_pattern_string(args.Epattern)
-    else:
-        equery = ''
+    iquery = get_pattern_string(args.Ipattern) if args.Ipattern else ''
+    equery = get_pattern_string(args.Epattern) if args.Epattern else ''
 
     # print(iquery, equery)
     query = get_query(iquery, equery)
+
+    # @TODO: add custom query option along with include and exclude patterns
+    if args.query:
+        pass
 
     try:
         if not is_tool("tree"):
