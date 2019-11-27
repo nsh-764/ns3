@@ -7,7 +7,7 @@ It uses the tree command to display the objects in an s3 bucketpath in a tree-li
 ## Dependencies
 ```bash
 tree        : $ sudo apt-get install tree | brew install tree
-python3     : $ sudo apt-get install python3 python3-dev pip
+python3     : $ sudo apt-get install python3.6 pip
 aws cli     : $ pip3 install awscli
 ```
 
